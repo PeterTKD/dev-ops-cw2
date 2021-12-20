@@ -1,0 +1,16 @@
+- name: Deploying image and creating service for app
+  user: ubuntu
+  hosts: localhost
+
+
+  tasks:
+
+  - name: 1. Deploying
+    shell:
+      cmd: kubectl create deployment task2 --image=petertkd/cw_app:1.0
+  - name: 2. Service
+    shell:
+      cmd: kubectl expose deployment/task2 --type="NodePort" --port 8080 --name task2-service
+  - name: 3. Scaling 
+    shell:
+      cmd: kubectl scale deployments/task2 --replicas=4

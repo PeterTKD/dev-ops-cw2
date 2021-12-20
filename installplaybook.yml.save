@@ -1,0 +1,54 @@
+- name: Task 2, Install Kubectl, Install and start Minikube 
+  hosts: localhost
+  user: ubuntu
+  
+
+  tasks:
+ 
+  - name: 1. Update Package Manager
+    become: yes
+    apt:
+      update_cache: yes
+  - name: 2. Install kubectl apt transport http
+    become: yes
+    apt:
+      update_cache: yes
+      name: apt-transport-https
+  - name: 3. Get Key
+    shell:
+      cmd: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -  
+  - name: 4. Echo
+    shell: 
+      cmd: echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+  - name: 5. Get apt Update
+    become: yes
+    apt:
+      update_cache: yes
+  - name: 6. Install
+    become: yes
+    apt:
+      update_cache: yes
+      name: kubectl
+  - name: 7. Install Conntrack required by kubectl
+    become: yes
+    apt:
+      update_cache: yes
+      name: conntrack
+  - name: 8. Install Minikube
+    become: yes
+    shell:
+      cmd: curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+  - name: 9. Move Minikube to to bin
+    copy:
+          src: minikubedest: /usr/local/bin/  
+  - name: 10. Ownership
+    become: yes
+    file:
+      path: /usr/local/bin/minikube
+      owner: ubuntu
+      group: ubuntu
+      mode: '777'
+  - name: 11. Run Minikube
+    shell:
+      cmd: minikube start
+  
